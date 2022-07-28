@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.picpay.desafio.data.BuildConfig
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -21,7 +22,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private lateinit var progressBar: ProgressBar
     private lateinit var adapter: UserListAdapter
 
-    private val url = BuildConfig.API_URL
+    private val url = BuildConfig.API_URL_DATA
 
     private val gson: Gson by lazy { GsonBuilder().create() }
 
