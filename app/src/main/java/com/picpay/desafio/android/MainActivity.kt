@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private lateinit var progressBar: ProgressBar
     private lateinit var adapter: UserListAdapter
 
-    private val url = "https://609a908e0f5a13001721b74e.mockapi.io/picpay/api/"
+    private val url = BuildConfig.API_URL
 
     private val gson: Gson by lazy { GsonBuilder().create() }
 
