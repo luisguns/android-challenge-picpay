@@ -22,7 +22,6 @@ ext {
     hilt_version = "2.42"
     lifecycle_version = "2.4.1"
     coroutines_version = "1.5.2"
-    rxjava_version = "2.2.17"
-    rxandroid_version = "2.1.1"
     core_ktx_test_version = "1.2.0"
+    androidx_fragment_version = '1.4.1'
 }
