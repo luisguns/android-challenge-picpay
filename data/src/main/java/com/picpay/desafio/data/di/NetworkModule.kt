@@ -2,9 +2,8 @@ package com.picpay.desafio.data.di
 
 import com.picpay.desafio.data.BuildConfig
 import com.picpay.desafio.data.network.PicPayApiService
-import com.picpay.desafio.data.network.user.GetUserNetworkDataSource
-import com.picpay.desafio.data.network.user.ImplGetUserNetworkDataSource
-import dagger.Binds
+import com.picpay.desafio.data.network.datasource.UserNetworkDatasource
+import com.picpay.desafio.data.network.user.ImplUserNetworkDatasource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,7 +43,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideGetUserNetworkDataSource(picPayService: PicPayApiService) : GetUserNetworkDataSource {
-        return ImplGetUserNetworkDataSource(picPayService)
+    fun provideUserNetworkDataSource(picPayService: PicPayApiService) : UserNetworkDatasource {
+        return ImplUserNetworkDatasource(picPayService)
     }
 }

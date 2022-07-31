@@ -1,17 +1,17 @@
-package com.picpay.desafio.android
+package com.picpay.desafio.android.usuario.ui
 
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.picpay.desafio.android.R
+import com.picpay.desafio.android.usuario.adapter.UserListAdapter
 import com.picpay.desafio.android.databinding.ActivityMainBinding
-import com.picpay.desafio.android.usuario.UserViewModel
-import com.picpay.desafio.domain.utils.Either
+import com.picpay.desafio.domain.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -34,20 +34,21 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         super.onResume()
 
         recyclerView = findViewById(R.id.recyclerView)
-        progressBar = findViewById(R.id.user_list_progress_bar)
+        progressBar = binding.userListProgressBar
 
 
         adapter = UserListAdapter()
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
-        binding.userListProgressBar.visibility = View.VISIBLE
-        userViewModel.UserLiveData.observe(this) { userEither ->
-            when (userEither) {
-                is Either.Success -> userEither.value?.let {
+        userViewModel.UserLiveData.observe(this) { userResourcec ->
+            progressBar.visibility = if (userResourcec is Resource.Loading) View.VISIBLE else View.GONE
+            when (userResourcec) {
+                is Resource.Success -> userResourcec.data?.let {
                     adapter.users = it
                     binding.userListProgressBar.visibility = View.GONE
                 }
+                is Resource.Error -> Toast.makeText(this, userResourcec.message, Toast.LENGTH_SHORT).show()
                 else -> {}
             }
         }

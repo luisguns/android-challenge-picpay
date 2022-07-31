@@ -1,4 +1,4 @@
-package com.picpay.desafio.data.model
+package com.picpay.desafio.data.network.model
 
 import com.google.gson.annotations.SerializedName
 
