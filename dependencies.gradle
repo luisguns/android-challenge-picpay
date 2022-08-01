@@ -17,7 +17,7 @@ ext {
     mockito_kotlin_version = '2.1.0'
 
     test_runner_version = '1.1.1'
-    espresso_version = '3.1.1'
+    espresso_version = '3.1.0'
 
     hilt_version = "2.42"
     lifecycle_version = "2.4.1"
@@ -26,4 +26,8 @@ ext {
     androidx_fragment_version = '1.4.1'
 
     room_version = '2.4.2'
+
+    robolectric_version= '4.7.3'
+
+    androidXTestExtKotlinRunnerVersion = '1.1.3'
 }

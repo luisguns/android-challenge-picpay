@@ -3,7 +3,7 @@ package com.picpay.desafio.data.di
 import com.picpay.desafio.data.BuildConfig
 import com.picpay.desafio.data.network.PicPayApiService
 import com.picpay.desafio.data.network.datasource.UserNetworkDatasource
-import com.picpay.desafio.data.network.user.ImplUserNetworkDatasource
+import com.picpay.desafio.data.network.datasource.ImplUserNetworkDatasource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

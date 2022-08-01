@@ -1,4 +1,4 @@
-package com.picpay.desafio.data.network.user
+package com.picpay.desafio.data.network.datasource
 
 import com.picpay.desafio.data.network.datasource.UserNetworkDatasource
 import com.picpay.desafio.data.network.model.UserDTO
