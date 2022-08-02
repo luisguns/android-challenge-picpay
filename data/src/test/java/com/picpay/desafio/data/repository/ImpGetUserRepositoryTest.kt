@@ -22,7 +22,7 @@ class ImpGetUserRepositoryTest {
     fun `when get user to repository return success and correct list use`() = runBlocking {
 
         //given
-        val repos = ImpGetUserRepository(FakeGetUserNetworkDatasource(),FakeGetUserLocalDatasource())
+        val repos = ImpGetUserRepository(FakeGetUserNetworkDatasource(),FakeGetEmptyUserLocalDatasource())
 
         //when
         repos.getUsers().test {
@@ -38,7 +38,7 @@ class ImpGetUserRepositoryTest {
     fun `when get users and throw a Exception return Error`() = runBlocking{
 
         //given
-        val repos = ImpGetUserRepository(FakeExceptionGetUserNetworkDatasource(),FakeGetUserLocalDatasource())
+        val repos = ImpGetUserRepository(FakeExceptionGetUserNetworkDatasource(),FakeGetEmptyUserLocalDatasource())
 
         //when
         repos.getUsers().test {
@@ -53,7 +53,7 @@ class ImpGetUserRepositoryTest {
 
     @Test
     fun `when get user and throw a HttpException return Error`() = runBlocking{
-        val repos = ImpGetUserRepository(FakeHttpExceptionGetUserNetworkDatasource(),FakeGetUserLocalDatasource())
+        val repos = ImpGetUserRepository(FakeHttpExceptionGetUserNetworkDatasource(),FakeGetEmptyUserLocalDatasource())
 
         repos.getUsers().test {
             val resource = expectMostRecentItem()
@@ -61,6 +61,30 @@ class ImpGetUserRepositoryTest {
             assertTrue(resource is Resource.Error)
             assertEquals(resource.message,
                 FakeHttpExceptionGetUserNetworkDatasource.CODE_HTTP_FAKE_ERROR.toString())
+        }
+    }
+
+    @Test
+    fun `when has cache and throw network error, return cache `() = runBlocking{
+        val repos = ImpGetUserRepository(FakeHttpExceptionGetUserNetworkDatasource(), FakeGetUserLocalDatasource())
+
+        repos.getUsers().test {
+            val resource = expectMostRecentItem()
+
+            assertTrue(resource is Resource.Success)
+            assertEquals(resource.data, FakeUserList.getFakeListLocal())
+        }
+    }
+
+    @Test
+    fun `when has cache and throw exception, return cache `() = runBlocking{
+        val repos = ImpGetUserRepository(FakeExceptionGetUserNetworkDatasource(), FakeGetUserLocalDatasource())
+
+        repos.getUsers().test {
+            val resource = expectMostRecentItem()
+
+            assertTrue(resource is Resource.Success)
+            assertEquals(resource.data, FakeUserList.getFakeListLocal())
         }
     }
 }
