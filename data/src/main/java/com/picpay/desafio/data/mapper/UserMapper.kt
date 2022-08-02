@@ -10,4 +10,6 @@ fun UserEntity.toDomainModel() = User(id, name, username, img)
 
 fun User.toLocalDataModel() = UserEntity(id, name, username, img)
 
+fun User.toNetworkModel() = UserDTO(img, name, id, username)
+
 fun UserDTO.toLocalDataModel() = UserEntity(id, name, username, img)

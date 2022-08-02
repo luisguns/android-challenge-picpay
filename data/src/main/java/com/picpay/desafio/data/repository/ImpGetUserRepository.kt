@@ -20,20 +20,19 @@ class ImpGetUserRepository @Inject constructor(
 
     override suspend fun getUsers(): Flow<Resource<List<User>>> = flow {
         try {
-            localDataSource.getAllUser()
             emit(Resource.Loading())
             val userList = networkDataSource.getUserNetwork()
             localDataSource.insertUser(userList.map { it.toLocalDataModel() })
             emit(Resource.Success(userList.map { it.toDomainModel() }))
         }
         catch (e: HttpException) {
-            Log.e(TAG, "HttpException: ${e.message}")
+            Log.e(TAG, "HttpException: ${e.code()}")
             localDataSource.getAllUser()?.let { listUser ->
                 emit(Resource.Success(listUser.map { it.toDomainModel() }))
                 Log.i(TAG, "HttpException: Get From Cache")
                 return@flow
             }
-            emit(Resource.Error(e.message ))
+            emit(Resource.Error(e.code().toString() ))
         }
         catch (e: Exception) {
             Log.e(TAG, "Exception: ${e.message}")
@@ -42,11 +41,12 @@ class ImpGetUserRepository @Inject constructor(
                 Log.i(TAG, "Exception: Get From Cache")
                 return@flow
             }
-            emit(Resource.Error(e.message ?: "Exception not identify"))
+            emit(Resource.Error(e.message ?: NOT_IDENTIFY_EXCEPTION))
         }
     }
 
     companion object {
         const val TAG = "GetUserRepository"
+        const val NOT_IDENTIFY_EXCEPTION = "Exception not identify"
     }
 }

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.picpay.desafio.android.R
 import com.picpay.desafio.android.usuario.adapter.UserListAdapter
 import com.picpay.desafio.android.databinding.ActivityMainBinding
+import com.picpay.desafio.domain.model.User
 import com.picpay.desafio.domain.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,8 +19,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var progressBar: ProgressBar
     private lateinit var adapter: UserListAdapter
 
     private val userViewModel: UserViewModel by viewModels()
@@ -29,29 +28,43 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initViews()
     }
+
+    private fun initData() {
+        userViewModel.UserLiveData.value?.let {
+            processDataResource(it)
+            return
+        }
+        userViewModel.getUser()
+    }
+
     override fun onResume() {
         super.onResume()
+        registerObservers()
+        initData()
+    }
 
-        recyclerView = findViewById(R.id.recyclerView)
-        progressBar = binding.userListProgressBar
+    private fun registerObservers() {
+        userViewModel.UserLiveData.observe(this) { userResource ->
+            processDataResource(userResource)
+        }
+    }
 
+    private fun processDataResource(userResource: Resource<List<User>>) {
+        binding.userListProgressBar.visibility = if (userResource is Resource.Loading) View.VISIBLE else View.GONE
+        when (userResource) {
+            is Resource.Success -> userResource.data?.let {
+                adapter.users = it
+            }
+            is Resource.Error -> Toast.makeText(this, userResource.message, Toast.LENGTH_SHORT).show()
+            else -> {}
+        }
+    }
 
+    private fun initViews() {
         adapter = UserListAdapter()
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-
-        userViewModel.UserLiveData.observe(this) { userResourcec ->
-            progressBar.visibility = if (userResourcec is Resource.Loading) View.VISIBLE else View.GONE
-            when (userResourcec) {
-                is Resource.Success -> userResourcec.data?.let {
-                    adapter.users = it
-                    binding.userListProgressBar.visibility = View.GONE
-                }
-                is Resource.Error -> Toast.makeText(this, userResourcec.message, Toast.LENGTH_SHORT).show()
-                else -> {}
-            }
-        }
-        userViewModel.getUser()
     }
 }
